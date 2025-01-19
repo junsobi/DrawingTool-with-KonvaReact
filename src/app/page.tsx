@@ -5,9 +5,9 @@ import ToolPanel from '@/components/tool-panel';
 export default function Home() {
   return (
     <MainLayout>
-      <div className="flex flex-col items-center justify-center gap-4 py-4">
-        <Canvas />
+      <div className="flex flex-col h-full items-center justify-center gap-4 py-3">
         <ToolPanel />
+        <Canvas />
       </div>
     </MainLayout>
   );
