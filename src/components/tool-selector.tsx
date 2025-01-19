@@ -1,8 +1,8 @@
 'use client';
 
-import { useDrawingStore } from '@/store/drawing-store';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { TOOLS } from '@/constants/constants';
+import { useDrawingStore } from '@/store/drawing-store';
 import { ToolItem } from '@/types/types';
 
 const ToolSelector = () => {

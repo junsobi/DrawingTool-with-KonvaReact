@@ -1,13 +1,14 @@
 'use client';
 
-import { useDrawingStore } from '@/store/drawing-store';
 import dynamic from 'next/dynamic';
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
 import ControlPanel from '@/layouts/control-panel';
+import { useDrawingStore } from '@/store/drawing-store';
 
 const SketchPicker = dynamic(
   () => import('react-color').then((mod) => mod.SketchPicker),

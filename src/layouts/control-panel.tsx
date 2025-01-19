@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { ControlPanelProps } from '@/types/types';
 
 const ControlPanel = ({ label, children, className }: ControlPanelProps) => {

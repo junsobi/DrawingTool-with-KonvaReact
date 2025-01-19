@@ -1,7 +1,7 @@
 'use client';
 
-import ThicknessSlider from './thickness-slider';
 import ColorPicker from './color-picker';
+import ThicknessSlider from './thickness-slider';
 import ToolSelector from './tool-selector';
 
 const ToolPanel = () => {

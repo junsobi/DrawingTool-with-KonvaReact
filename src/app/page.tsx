@@ -1,6 +1,6 @@
-import MainLayout from '@/layouts/main-layout';
 import Canvas from '@/components/canvas';
 import ToolPanel from '@/components/tool-panel';
+import MainLayout from '@/layouts/main-layout';
 
 export default function Home() {
   return (

@@ -1,4 +1,5 @@
 import { Pencil, Square, Circle, Spline, PencilLine } from 'lucide-react';
+
 import { ToolItem } from '@/types/types';
 
 export const TOOLS: ToolItem[] = [

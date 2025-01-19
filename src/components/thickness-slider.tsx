@@ -1,8 +1,8 @@
 'use client';
 
-import { useDrawingStore } from '@/store/drawing-store';
 import { Slider } from '@/components/ui/slider';
 import ControlPanel from '@/layouts/control-panel';
+import { useDrawingStore } from '@/store/drawing-store';
 
 const ThicknessSlider = () => {
   const { thickness, setThickness } = useDrawingStore();
