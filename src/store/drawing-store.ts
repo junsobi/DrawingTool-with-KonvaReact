@@ -9,4 +9,7 @@ export const useDrawingStore = create<DrawingState>((set) => ({
   setThickness: (thickness) => set({ thickness }),
   color: '#000000',
   setColor: (color) => set({ color }),
+  shapes: [],
+  addShape: (shape) => set((state) => ({ shapes: [...state.shapes, shape] })),
+  clearShapes: () => set({ shapes: [] }),
 }));

@@ -13,10 +13,25 @@ export interface DrawingState {
   setThickness: (thickness: number) => void;
   color: string;
   setColor: (color: string) => void;
+  shapes: Shape[];
+  addShape: (shape: Shape) => void;
+  clearShapes: () => void;
 }
 
 export interface ControlPanelProps {
   label: string;
   children: React.ReactNode;
   className?: string;
+}
+
+export interface Shape {
+  id: string;
+  type: ToolType;
+  points?: number[];
+  color: string;
+  thickness: number;
+}
+
+export interface FreeDrawProps {
+  shape: Shape;
 }
