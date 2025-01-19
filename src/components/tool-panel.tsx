@@ -4,6 +4,8 @@ import { useDrawingStore } from '@/store/drawing-store';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { TOOLS } from '@/constants/constants';
 import { ToolItem } from '@/types/types';
+import ThicknessSlider from './thickness-slider';
+import ColorPicker from './color-picker';
 
 const ToolPanel = () => {
   const { tool, setTool } = useDrawingStore();
@@ -18,11 +20,15 @@ const ToolPanel = () => {
   };
 
   return (
-    <ToggleGroup {...toggleGroupProps}>
-      {TOOLS.map((tool) => (
-        <ToolButton key={tool.id} {...tool} />
-      ))}
-    </ToggleGroup>
+    <div className="flex  border rounded-3xl shadow-sm p-4 bg-slate-50 justify-between gap-4 w-full ">
+      <ToggleGroup {...toggleGroupProps}>
+        {TOOLS.map((tool) => (
+          <ToolButton key={tool.id} {...tool} />
+        ))}
+      </ToggleGroup>
+      <ThicknessSlider />
+      <ColorPicker />
+    </div>
   );
 };
 
