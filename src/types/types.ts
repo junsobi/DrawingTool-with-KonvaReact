@@ -1,3 +1,13 @@
+import { PersistStorage, StorageValue } from 'zustand/middleware';
+
+export interface StorageHandler extends PersistStorage<unknown> {
+  getItem: (
+    key: string
+  ) => StorageValue<unknown> | Promise<StorageValue<unknown> | null> | null;
+  setItem: (key: string, value: unknown) => void;
+  removeItem: (key: string) => void;
+}
+
 export type ToolType = 'free-draw' | 'line' | 'ellipse' | 'rect' | 'polygon';
 
 export type ToolItem = {
