@@ -3,6 +3,7 @@ import { Stage, Layer } from 'react-konva';
 import { useDrawing } from '@/hooks/use-drawing';
 import { useDrawingStore } from '@/store/drawing-store';
 
+import DrawEllipse from './tools/draw-ellipse';
 import DrawLine from './tools/draw-line';
 
 const CanvasComponent = () => {
@@ -12,7 +13,7 @@ const CanvasComponent = () => {
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
-    currentLine,
+    currentShape,
     isDrawing,
   } = useDrawing();
 
@@ -26,16 +27,38 @@ const CanvasComponent = () => {
       onMouseUp={handleMouseUp}
     >
       <Layer>
-        {shapes.map((shape) => (
-          <DrawLine key={shape.id} shape={shape} />
-        ))}
+        {shapes.map((shape) => {
+          switch (shape.type) {
+            case 'free-draw':
+            case 'line':
+              return <DrawLine key={shape.id} shape={shape} />;
+            case 'ellipse':
+              return <DrawEllipse key={shape.id} shape={shape} />;
+            default:
+              return null;
+          }
+        })}
 
         {isDrawing && (tool === 'free-draw' || tool === 'line') && (
           <DrawLine
             shape={{
               id: 'temp',
               type: tool,
-              points: currentLine,
+              points: currentShape,
+              color,
+              thickness,
+            }}
+          />
+        )}
+        {isDrawing && tool === 'ellipse' && (
+          <DrawEllipse
+            shape={{
+              id: 'temp',
+              type: 'ellipse',
+              x: currentShape[0],
+              y: currentShape[1],
+              radiusX: Math.abs(currentShape[2]),
+              radiusY: Math.abs(currentShape[3]),
               color,
               thickness,
             }}

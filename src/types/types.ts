@@ -35,8 +35,7 @@ export interface LineShape extends BaseShape {
 
 export interface EllipseShape extends BaseShape {
   type: 'ellipse';
-  fill: string;
-  stroke: string;
+  color: string;
   radiusX: number;
   radiusY: number;
   x: number;

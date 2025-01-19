@@ -7,7 +7,7 @@ import { useDrawingStore } from '@/store/drawing-store';
 export const useDrawing = () => {
   const { addShape, color, thickness, tool } = useDrawingStore();
   const [isDrawing, setIsDrawing] = useState(false);
-  const [currentLine, setCurrentLine] = useState<number[]>([]);
+  const [currentShape, setCurrentShape] = useState<number[]>([]);
 
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     const stage = e.target.getStage();
@@ -17,7 +17,9 @@ export const useDrawing = () => {
     setIsDrawing(true);
 
     if (tool === 'free-draw' || tool === 'line') {
-      setCurrentLine([pos.x, pos.y]);
+      setCurrentShape([pos.x, pos.y]);
+    } else if (tool === 'ellipse') {
+      setCurrentShape([pos.x, pos.y, 0, 0]); // x, y, radiusX, radiusY 초기값
     }
   };
 
@@ -29,28 +31,61 @@ export const useDrawing = () => {
     if (!pos) return;
 
     if (tool === 'free-draw') {
-      setCurrentLine((prev) => [...prev, pos.x, pos.y]);
+      setCurrentShape((prev) => [...prev, pos.x, pos.y]);
     } else if (tool === 'line') {
-      setCurrentLine((prev) => [prev[0], prev[1], pos.x, pos.y]);
+      setCurrentShape((prev) => [prev[0], prev[1], pos.x, pos.y]);
+    } else if (tool === 'ellipse') {
+      setCurrentShape((prev) => [
+        prev[0],
+        prev[1],
+        Math.abs(pos.x - prev[0]),
+        Math.abs(pos.y - prev[1]),
+      ]);
     }
   };
 
   const handleMouseUp = () => {
-    if (isDrawing && currentLine.length > 2) {
-      addShape({
-        id: uuidv4(),
-        type: tool,
-        points: currentLine,
-        color,
-        thickness,
-      });
-      setCurrentLine([]);
+    if (isDrawing && currentShape.length > 2) {
+      if (tool === 'free-draw') {
+        addShape({
+          id: uuidv4(),
+          type: 'free-draw',
+          points: currentShape,
+          color,
+          thickness,
+        });
+      } else if (tool === 'line') {
+        addShape({
+          id: uuidv4(),
+          type: 'line',
+          points: [
+            currentShape[0],
+            currentShape[1],
+            currentShape[2],
+            currentShape[3],
+          ],
+          color,
+          thickness,
+        });
+      } else if (tool === 'ellipse') {
+        addShape({
+          id: uuidv4(),
+          type: 'ellipse',
+          x: currentShape[0],
+          y: currentShape[1],
+          radiusX: Math.abs(currentShape[2]),
+          radiusY: Math.abs(currentShape[3]),
+          color,
+          thickness,
+        });
+      }
+      setCurrentShape([]);
+      setIsDrawing(false);
     }
-    setIsDrawing(false);
   };
 
   return {
-    currentLine,
+    currentShape,
     isDrawing,
     handleMouseDown,
     handleMouseMove,
