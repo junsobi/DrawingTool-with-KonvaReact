@@ -4,25 +4,17 @@ import { Line } from 'react-konva';
 
 import { FreeDrawProps } from '@/types/types';
 
-const FreeDraw = ({ shape }: FreeDrawProps) => {
+const DrawLine = ({ shape }: FreeDrawProps) => {
   return (
     <Line
       points={shape.points || []}
       stroke={shape.color}
       strokeWidth={shape.thickness}
-      tension={0.5}
+      tension={shape.type === 'free-draw' ? 0.5 : 0}
       lineCap="round"
       lineJoin="round"
     />
   );
 };
 
-FreeDraw.defaultProps = {
-  shape: {
-    points: [],
-    color: '#000000',
-    thickness: 5,
-  },
-};
-
-export default FreeDraw;
+export default DrawLine;

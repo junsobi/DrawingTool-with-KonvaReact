@@ -38,6 +38,10 @@ export interface Shape {
   id: string;
   type: ToolType;
   points?: number[];
+  x?: number;
+  y?: number;
+  endX?: number;
+  endY?: number;
   color: string;
   thickness: number;
 }

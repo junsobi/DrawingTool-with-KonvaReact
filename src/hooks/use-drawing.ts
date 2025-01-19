@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useDrawingStore } from '@/store/drawing-store';
-import { Shape } from '@/types/types';
 
 export const useDrawing = () => {
   const { addShape, color, thickness, tool } = useDrawingStore();
@@ -19,6 +18,8 @@ export const useDrawing = () => {
 
     if (tool === 'free-draw') {
       setCurrentLine([pos.x, pos.y]);
+    } else if (tool === 'line') {
+      setCurrentLine([pos.x, pos.y, pos.x, pos.y]);
     }
   };
 
@@ -31,22 +32,33 @@ export const useDrawing = () => {
 
     if (tool === 'free-draw') {
       setCurrentLine((prev) => [...prev, pos.x, pos.y]);
+    } else if (tool === 'line') {
+      setCurrentLine((prev) => [prev[0], prev[1], pos.x, pos.y]);
     }
   };
 
   const handleMouseUp = () => {
-    if (tool === 'free-draw' && currentLine.length > 2) {
-      const newShape: Shape = {
-        id: uuidv4(),
-        type: 'free-draw',
-        points: currentLine,
-        color,
-        thickness,
-      };
-      addShape(newShape);
+    if (isDrawing) {
+      if (tool === 'free-draw' && currentLine.length > 2) {
+        addShape({
+          id: uuidv4(),
+          type: 'free-draw',
+          points: currentLine,
+          color,
+          thickness,
+        });
+      } else if (tool === 'line') {
+        addShape({
+          id: uuidv4(),
+          type: 'line',
+          points: currentLine,
+          color,
+          thickness,
+        });
+      }
       setCurrentLine([]);
+      setIsDrawing(false);
     }
-    setIsDrawing(false);
   };
 
   return {

@@ -5,10 +5,9 @@ import { Stage, Layer } from 'react-konva';
 import { useDrawing } from '@/hooks/use-drawing';
 import { useDrawingStore } from '@/store/drawing-store';
 
-import FreeDraw from './tools/free-draw';
-
+import DrawLine from './tools/draw-line';
 const CanvasComponent = () => {
-  const { shapes, color, thickness } = useDrawingStore();
+  const { shapes, color, thickness, tool } = useDrawingStore();
 
   const {
     handleMouseDown,
@@ -28,19 +27,30 @@ const CanvasComponent = () => {
       onMouseUp={handleMouseUp}
     >
       <Layer>
-        {/* 저장된 도형들 렌더링 */}
         {shapes.map((shape) =>
-          shape.type === 'free-draw' ? (
-            <FreeDraw key={shape.id} shape={shape} />
+          shape.type === 'free-draw' || shape.type === 'line' ? (
+            <DrawLine key={shape.id} shape={shape} />
           ) : null
         )}
 
         {/* 실시간 드로잉 */}
-        {isDrawing && (
-          <FreeDraw
+        {isDrawing && tool === 'free-draw' && (
+          <DrawLine
             shape={{
               id: 'temp',
               type: 'free-draw',
+              points: currentLine,
+              color,
+              thickness,
+            }}
+          />
+        )}
+
+        {isDrawing && tool === 'line' && (
+          <DrawLine
+            shape={{
+              id: 'temp',
+              type: 'line',
               points: currentLine,
               color,
               thickness,
