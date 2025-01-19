@@ -16,6 +16,35 @@ export type ToolItem = {
   icon: React.ElementType;
 };
 
+export interface BaseShape {
+  id: string;
+  type: ToolType;
+  color: string;
+  thickness: number;
+}
+
+export interface FreeDrawShape extends BaseShape {
+  type: 'free-draw';
+  points: number[];
+}
+
+export interface LineShape extends BaseShape {
+  type: 'line';
+  points: number[];
+}
+
+export interface EllipseShape extends BaseShape {
+  type: 'ellipse';
+  fill: string;
+  stroke: string;
+  radiusX: number;
+  radiusY: number;
+  x: number;
+  y: number;
+}
+
+export type Shape = FreeDrawShape | LineShape | EllipseShape;
+
 export interface DrawingState {
   tool: ToolType;
   setTool: (tool: ToolType) => void;
@@ -34,18 +63,6 @@ export interface ControlPanelProps {
   className?: string;
 }
 
-export interface Shape {
-  id: string;
-  type: ToolType;
-  points?: number[];
-  x?: number;
-  y?: number;
-  endX?: number;
-  endY?: number;
-  color: string;
-  thickness: number;
-}
-
-export interface FreeDrawProps {
+export interface ShapeProps {
   shape: Shape;
 }

@@ -16,10 +16,8 @@ export const useDrawing = () => {
 
     setIsDrawing(true);
 
-    if (tool === 'free-draw') {
+    if (tool === 'free-draw' || tool === 'line') {
       setCurrentLine([pos.x, pos.y]);
-    } else if (tool === 'line') {
-      setCurrentLine([pos.x, pos.y, pos.x, pos.y]);
     }
   };
 
@@ -38,27 +36,17 @@ export const useDrawing = () => {
   };
 
   const handleMouseUp = () => {
-    if (isDrawing) {
-      if (tool === 'free-draw' && currentLine.length > 2) {
-        addShape({
-          id: uuidv4(),
-          type: 'free-draw',
-          points: currentLine,
-          color,
-          thickness,
-        });
-      } else if (tool === 'line') {
-        addShape({
-          id: uuidv4(),
-          type: 'line',
-          points: currentLine,
-          color,
-          thickness,
-        });
-      }
+    if (isDrawing && currentLine.length > 2) {
+      addShape({
+        id: uuidv4(),
+        type: tool,
+        points: currentLine,
+        color,
+        thickness,
+      });
       setCurrentLine([]);
-      setIsDrawing(false);
     }
+    setIsDrawing(false);
   };
 
   return {

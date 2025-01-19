@@ -1,11 +1,10 @@
-'use client';
-
 import { Stage, Layer } from 'react-konva';
 
 import { useDrawing } from '@/hooks/use-drawing';
 import { useDrawingStore } from '@/store/drawing-store';
 
 import DrawLine from './tools/draw-line';
+
 const CanvasComponent = () => {
   const { shapes, color, thickness, tool } = useDrawingStore();
 
@@ -27,30 +26,15 @@ const CanvasComponent = () => {
       onMouseUp={handleMouseUp}
     >
       <Layer>
-        {shapes.map((shape) =>
-          shape.type === 'free-draw' || shape.type === 'line' ? (
-            <DrawLine key={shape.id} shape={shape} />
-          ) : null
-        )}
+        {shapes.map((shape) => (
+          <DrawLine key={shape.id} shape={shape} />
+        ))}
 
-        {/* 실시간 드로잉 */}
-        {isDrawing && tool === 'free-draw' && (
+        {isDrawing && (tool === 'free-draw' || tool === 'line') && (
           <DrawLine
             shape={{
               id: 'temp',
-              type: 'free-draw',
-              points: currentLine,
-              color,
-              thickness,
-            }}
-          />
-        )}
-
-        {isDrawing && tool === 'line' && (
-          <DrawLine
-            shape={{
-              id: 'temp',
-              type: 'line',
+              type: tool,
               points: currentLine,
               color,
               thickness,
