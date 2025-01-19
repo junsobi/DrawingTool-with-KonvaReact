@@ -18,8 +18,8 @@ export const useDrawing = () => {
 
     if (tool === 'free-draw' || tool === 'line') {
       setCurrentShape([pos.x, pos.y]);
-    } else if (tool === 'ellipse') {
-      setCurrentShape([pos.x, pos.y, 0, 0]); // x, y, radiusX, radiusY 초기값
+    } else if (tool === 'ellipse' || tool === 'rect') {
+      setCurrentShape([pos.x, pos.y, 0, 0]);
     }
   };
 
@@ -40,6 +40,13 @@ export const useDrawing = () => {
         prev[1],
         Math.abs(pos.x - prev[0]),
         Math.abs(pos.y - prev[1]),
+      ]);
+    } else if (tool === 'rect') {
+      setCurrentShape((prev) => [
+        prev[0],
+        prev[1],
+        pos.x - prev[0],
+        pos.y - prev[1],
       ]);
     }
   };
@@ -71,10 +78,32 @@ export const useDrawing = () => {
         addShape({
           id: uuidv4(),
           type: 'ellipse',
-          x: currentShape[0],
-          y: currentShape[1],
+          x: Math.min(currentShape[0], currentShape[0] + currentShape[2]),
+          y: Math.min(currentShape[1], currentShape[1] + currentShape[3]),
           radiusX: Math.abs(currentShape[2]),
           radiusY: Math.abs(currentShape[3]),
+          color,
+          thickness,
+        });
+      } else if (tool === 'rect') {
+        const x =
+          currentShape[2] < 0
+            ? currentShape[0] + currentShape[2]
+            : currentShape[0];
+        const y =
+          currentShape[3] < 0
+            ? currentShape[1] + currentShape[3]
+            : currentShape[1];
+        const width = Math.abs(currentShape[2]);
+        const height = Math.abs(currentShape[3]);
+
+        addShape({
+          id: uuidv4(),
+          type: 'rect',
+          x,
+          y,
+          width,
+          height,
           color,
           thickness,
         });

@@ -5,6 +5,7 @@ import { useDrawingStore } from '@/store/drawing-store';
 
 import DrawEllipse from './tools/draw-ellipse';
 import DrawLine from './tools/draw-line';
+import DrawRect from './tools/draw-rect';
 
 const CanvasComponent = () => {
   const { shapes, color, thickness, tool } = useDrawingStore();
@@ -34,6 +35,8 @@ const CanvasComponent = () => {
               return <DrawLine key={shape.id} shape={shape} />;
             case 'ellipse':
               return <DrawEllipse key={shape.id} shape={shape} />;
+            case 'rect':
+              return <DrawRect key={shape.id} shape={shape} />;
             default:
               return null;
           }
@@ -59,6 +62,20 @@ const CanvasComponent = () => {
               y: currentShape[1],
               radiusX: Math.abs(currentShape[2]),
               radiusY: Math.abs(currentShape[3]),
+              color,
+              thickness,
+            }}
+          />
+        )}
+        {isDrawing && tool === 'rect' && (
+          <DrawRect
+            shape={{
+              id: 'temp',
+              type: 'rect',
+              x: currentShape[0],
+              y: currentShape[1],
+              width: currentShape[2],
+              height: currentShape[3],
               color,
               thickness,
             }}

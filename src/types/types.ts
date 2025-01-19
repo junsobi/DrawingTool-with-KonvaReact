@@ -42,7 +42,16 @@ export interface EllipseShape extends BaseShape {
   y: number;
 }
 
-export type Shape = FreeDrawShape | LineShape | EllipseShape;
+export interface RectShape extends BaseShape {
+  type: 'rect';
+  color: string;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
+export type Shape = FreeDrawShape | LineShape | EllipseShape | RectShape;
 
 export interface DrawingState {
   tool: ToolType;
