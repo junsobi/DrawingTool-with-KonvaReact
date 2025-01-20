@@ -1,6 +1,6 @@
-import Canvas from '@/components/canvas';
-import CanvasController from '@/components/canvas-controller';
-import ToolPanel from '@/components/tool-panel';
+import Canvas from '@/components/canvas/canvas';
+import CanvasController from '@/components/canvas/canvas-controller';
+import ToolPanel from '@/components/canvas/tool-panel';
 import MainLayout from '@/layouts/main-layout';
 
 export default function Home() {

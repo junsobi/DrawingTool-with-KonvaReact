@@ -3,7 +3,7 @@ import { Undo, Redo } from 'lucide-react';
 
 import { useDrawingStore } from '@/store/drawing-store';
 
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 const CanvasController = () => {
   return (

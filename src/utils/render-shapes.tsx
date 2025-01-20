@@ -1,7 +1,7 @@
-import DrawEllipse from '@/components/tools/draw-ellipse';
-import DrawLine from '@/components/tools/draw-line';
-import DrawPolygon from '@/components/tools/draw-polygon';
-import DrawRect from '@/components/tools/draw-rect';
+import DrawEllipse from '@/components/drawing-tools/tools/draw-ellipse';
+import DrawLine from '@/components/drawing-tools/tools/draw-line';
+import DrawPolygon from '@/components/drawing-tools/tools/draw-polygon';
+import DrawRect from '@/components/drawing-tools/tools/draw-rect';
 import { ToolType, Shape } from '@/types/types';
 
 const components: Record<Shape['type'], React.ElementType> = {

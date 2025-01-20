@@ -1,8 +1,8 @@
 'use client';
 
-import ColorPicker from './color-picker';
-import ThicknessSlider from './thickness-slider';
-import ToolSelector from './tool-selector';
+import ColorPicker from '../drawing-tools/color-picker';
+import ThicknessSlider from '../drawing-tools/thickness-slider';
+import ToolSelector from '../drawing-tools/tool-selector';
 
 const ToolPanel = () => {
   return (
