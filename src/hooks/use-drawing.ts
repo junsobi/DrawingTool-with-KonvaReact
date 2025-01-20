@@ -3,11 +3,32 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useDrawingStore } from '@/store/drawing-store';
+import { ToolType, PolygonDrawingState } from '@/types/types';
+import {
+  handleShapeMouseDown,
+  handlePolygonMouseDown,
+  createShape,
+  resetPolygonDrawing,
+  resetDrawing,
+} from '@/utils/drawing-utils';
 
 export const useDrawing = () => {
   const { addShape, color, thickness, tool } = useDrawingStore();
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentShape, setCurrentShape] = useState<number[]>([]);
+  const [polygonPoints, setPolygonPoints] = useState<number[][]>([]);
+  const [isPolygonFinished, setIsPolygonFinished] = useState(false);
+
+  const polygonState: PolygonDrawingState = {
+    polygonPoints,
+    isDrawing,
+    currentShape,
+    isPolygonFinished,
+    setPolygonPoints,
+    setIsDrawing,
+    setCurrentShape,
+    setIsPolygonFinished,
+  };
 
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     const stage = e.target.getStage();
@@ -16,10 +37,10 @@ export const useDrawing = () => {
 
     setIsDrawing(true);
 
-    if (tool === 'free-draw' || tool === 'line') {
-      setCurrentShape([pos.x, pos.y]);
-    } else if (tool === 'ellipse' || tool === 'rect') {
-      setCurrentShape([pos.x, pos.y, 0, 0]);
+    if (tool === 'polygon') {
+      handlePolygonMouseDown(pos, polygonState);
+    } else {
+      handleShapeMouseDown(tool as ToolType, pos, setCurrentShape);
     }
   };
 
@@ -30,87 +51,65 @@ export const useDrawing = () => {
     const pos = stage?.getPointerPosition();
     if (!pos) return;
 
-    if (tool === 'free-draw') {
-      setCurrentShape((prev) => [...prev, pos.x, pos.y]);
-    } else if (tool === 'line') {
-      setCurrentShape((prev) => [prev[0], prev[1], pos.x, pos.y]);
-    } else if (tool === 'ellipse') {
-      setCurrentShape((prev) => [
-        prev[0],
-        prev[1],
-        Math.abs(pos.x - prev[0]),
-        Math.abs(pos.y - prev[1]),
-      ]);
-    } else if (tool === 'rect') {
-      setCurrentShape((prev) => [
-        prev[0],
-        prev[1],
-        pos.x - prev[0],
-        pos.y - prev[1],
-      ]);
+    const updateShape = (newShape: number[]) => setCurrentShape(newShape);
+
+    switch (tool) {
+      case 'polygon':
+        if (polygonPoints.length > 0) {
+          updateShape([
+            polygonPoints[polygonPoints.length - 1][0],
+            polygonPoints[polygonPoints.length - 1][1],
+            pos.x,
+            pos.y,
+          ]);
+        }
+        break;
+      case 'free-draw':
+        setCurrentShape((prev) => [...prev, pos.x, pos.y]);
+        break;
+      case 'line':
+        updateShape([currentShape[0], currentShape[1], pos.x, pos.y]);
+        break;
+      case 'ellipse':
+        updateShape([
+          currentShape[0],
+          currentShape[1],
+          Math.abs(pos.x - currentShape[0]),
+          Math.abs(pos.y - currentShape[1]),
+        ]);
+        break;
+      case 'rect':
+        updateShape([
+          currentShape[0],
+          currentShape[1],
+          pos.x - currentShape[0],
+          pos.y - currentShape[1],
+        ]);
+        break;
     }
   };
 
   const handleMouseUp = () => {
-    if (isDrawing && currentShape.length > 2) {
-      if (tool === 'free-draw') {
+    if (tool === 'polygon') {
+      if (isPolygonFinished) {
         addShape({
           id: uuidv4(),
-          type: 'free-draw',
-          points: currentShape,
+          type: 'polygon',
+          points: polygonPoints,
           color,
           thickness,
+          closed: true,
         });
-      } else if (tool === 'line') {
-        addShape({
-          id: uuidv4(),
-          type: 'line',
-          points: [
-            currentShape[0],
-            currentShape[1],
-            currentShape[2],
-            currentShape[3],
-          ],
-          color,
-          thickness,
-        });
-      } else if (tool === 'ellipse') {
-        addShape({
-          id: uuidv4(),
-          type: 'ellipse',
-          x: Math.min(currentShape[0], currentShape[0] + currentShape[2]),
-          y: Math.min(currentShape[1], currentShape[1] + currentShape[3]),
-          radiusX: Math.abs(currentShape[2]),
-          radiusY: Math.abs(currentShape[3]),
-          color,
-          thickness,
-        });
-      } else if (tool === 'rect') {
-        const x =
-          currentShape[2] < 0
-            ? currentShape[0] + currentShape[2]
-            : currentShape[0];
-        const y =
-          currentShape[3] < 0
-            ? currentShape[1] + currentShape[3]
-            : currentShape[1];
-        const width = Math.abs(currentShape[2]);
-        const height = Math.abs(currentShape[3]);
-
-        addShape({
-          id: uuidv4(),
-          type: 'rect',
-          x,
-          y,
-          width,
-          height,
-          color,
-          thickness,
-        });
+        resetPolygonDrawing(polygonState);
       }
-      setCurrentShape([]);
-      setIsDrawing(false);
+      return;
     }
+
+    if (isDrawing && currentShape.length > 2) {
+      addShape(createShape(tool, currentShape, color, thickness));
+    }
+
+    resetDrawing({ setCurrentShape, setIsDrawing });
   };
 
   return {
@@ -119,5 +118,7 @@ export const useDrawing = () => {
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    polygonPoints,
+    isPolygonFinished,
   };
 };

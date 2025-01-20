@@ -51,7 +51,18 @@ export interface RectShape extends BaseShape {
   y: number;
 }
 
-export type Shape = FreeDrawShape | LineShape | EllipseShape | RectShape;
+export interface PolygonShape extends BaseShape {
+  type: 'polygon';
+  points: number[][];
+  closed: boolean;
+}
+
+export type Shape =
+  | FreeDrawShape
+  | LineShape
+  | EllipseShape
+  | RectShape
+  | PolygonShape;
 
 export interface DrawingState {
   tool: ToolType;
@@ -63,6 +74,22 @@ export interface DrawingState {
   shapes: Shape[];
   addShape: (shape: Shape) => void;
   clearShapes: () => void;
+}
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export interface PolygonDrawingState {
+  polygonPoints: number[][];
+  isDrawing: boolean;
+  currentShape: number[];
+  isPolygonFinished: boolean;
+  setPolygonPoints: (points: number[][]) => void;
+  setIsDrawing: (drawing: boolean) => void;
+  setCurrentShape: (shape: number[]) => void;
+  setIsPolygonFinished: (finished: boolean) => void;
 }
 
 export interface ControlPanelProps {
