@@ -74,6 +74,10 @@ export interface DrawingState {
   shapes: Shape[];
   addShape: (shape: Shape) => void;
   clearShapes: () => void;
+  history: Shape[][];
+  redoStack: Shape[][];
+  undo: () => void;
+  redo: () => void;
 }
 
 export interface Position {

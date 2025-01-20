@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { DrawingState, StorageHandler } from '@/types/types';
+import { Shape } from '@/types/types';
 
 const safeLocalStorage: StorageHandler = {
   getItem: (key: string) => {
@@ -41,9 +42,44 @@ export const useDrawingStore = create<DrawingState>()(
       color: '#000000',
       setColor: (color) => set({ color }),
       shapes: [],
+      history: [] as Shape[][],
+      redoStack: [] as Shape[][],
+
       addShape: (shape) =>
-        set((state) => ({ shapes: [...state.shapes, shape] })),
-      clearShapes: () => set({ shapes: [] }),
+        set((state) => ({
+          history: [...state.history, state.shapes],
+          shapes: [...state.shapes, shape],
+          redoStack: [],
+        })),
+
+      undo: () =>
+        set((state) => {
+          if (state.history.length === 0) return state;
+          const previous = state.history.pop();
+          return {
+            shapes: previous || [],
+            history: [...state.history],
+            redoStack: [...state.redoStack, state.shapes],
+          };
+        }),
+
+      redo: () =>
+        set((state) => {
+          if (state.redoStack.length === 0) return state;
+          const next = state.redoStack.pop();
+          return {
+            shapes: next || [],
+            redoStack: [...state.redoStack],
+            history: [...state.history, state.shapes],
+          };
+        }),
+
+      clearShapes: () =>
+        set((state) => ({
+          history: [...state.history, state.shapes],
+          shapes: [],
+          redoStack: [],
+        })),
     }),
     {
       name: 'drawing-storage',
