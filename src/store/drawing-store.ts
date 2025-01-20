@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import { MAX_HISTORY_SIZE } from '@/constants/constants';
 import { DrawingState, StorageHandler } from '@/types/types';
 import { Shape } from '@/types/types';
 
@@ -46,11 +47,19 @@ export const useDrawingStore = create<DrawingState>()(
       redoStack: [] as Shape[][],
 
       addShape: (shape) =>
-        set((state) => ({
-          history: [...state.history, state.shapes],
-          shapes: [...state.shapes, shape],
-          redoStack: [],
-        })),
+        set((state) => {
+          const newHistory = [...state.history, state.shapes];
+
+          if (newHistory.length > MAX_HISTORY_SIZE) {
+            newHistory.shift();
+          }
+
+          return {
+            history: newHistory,
+            shapes: [...state.shapes, shape],
+            redoStack: [],
+          };
+        }),
 
       undo: () =>
         set((state) => {

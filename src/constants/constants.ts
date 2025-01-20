@@ -9,3 +9,5 @@ export const TOOLS: ToolItem[] = [
   { id: 'rect', label: '직사각형', icon: Square },
   { id: 'polygon', label: '폴리곤', icon: Spline },
 ];
+
+export const MAX_HISTORY_SIZE = 40;
