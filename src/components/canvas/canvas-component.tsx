@@ -13,6 +13,7 @@ const CanvasComponent = () => {
     currentShape,
     isDrawing,
     polygonPoints,
+    isStartHovered,
   } = useDrawing();
 
   const stageProps = {
@@ -29,7 +30,15 @@ const CanvasComponent = () => {
       <Layer>
         {shapes.map(renderShape)}
         {isDrawing &&
-          renderTempShape(tool, currentShape, color, thickness, polygonPoints)}
+          renderTempShape(
+            tool,
+            currentShape,
+            color,
+            thickness,
+            polygonPoints,
+            handleMouseMove,
+            isStartHovered
+          )}
       </Layer>
     </Stage>
   );

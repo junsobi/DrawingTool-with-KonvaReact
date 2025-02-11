@@ -19,6 +19,9 @@ export const useDrawing = () => {
   const [polygonPoints, setPolygonPoints] = useState<number[][]>([]);
   const [isPolygonFinished, setIsPolygonFinished] = useState(false);
 
+  // polygon에서 사용될 호버링 변수
+  const [isStartHovered, setIsStartHovered] = useState(false);
+
   const polygonState: PolygonDrawingState = {
     polygonPoints,
     isDrawing,
@@ -56,12 +59,20 @@ export const useDrawing = () => {
     switch (tool) {
       case 'polygon':
         if (polygonPoints.length > 0) {
-          updateShape([
+          setCurrentShape([
             polygonPoints[polygonPoints.length - 1][0],
             polygonPoints[polygonPoints.length - 1][1],
             pos.x,
             pos.y,
           ]);
+
+          // 시작점과의 거리 계산하여 hover 상태 업데이트
+          const firstPoint = polygonPoints[0];
+          const distance = Math.hypot(
+            firstPoint[0] - pos.x,
+            firstPoint[1] - pos.y
+          );
+          setIsStartHovered(distance < 10);
         }
         break;
       case 'free-draw':
@@ -115,6 +126,7 @@ export const useDrawing = () => {
   return {
     currentShape,
     isDrawing,
+    isStartHovered,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
